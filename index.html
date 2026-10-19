@@ -1,11 +1,46 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Planner</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Daily Planner</title>
 </head>
+
 <body>
-    
+
+  <div class="formulario">
+    <form action="#"> <!--Definir el form-handler-->
+      <label for="taskName">Task:</label><br>
+      <input type="text" id="taskName"><br>
+      <label for="taskDescription">Description:</label><br>
+      <input type="text" id="taskDescription"><br>
+      <label for="assignedTo">Assigned to:</label><br>
+      <select id="assignedTo">
+        <option value="user1">User 1</option>
+        <option value="user2">User 2</option>
+        <option value="user3">User 3</option>
+        <option value="user4">User 4</option>
+      </select><br>
+      <label for="targetDate">Target Date:</label><br>
+      <input type="date" id="targetDate"><br>
+      <label for="taskStatus">Status:</label><br>
+      <select id="taskStatus">
+        <option value="notStarted">Not Started</option>
+        <option value="inProgress">In Progress</option>
+        <option value="onHold">On Hold</option>
+        <option value="blocked">Blocked</option>
+      </select><br>
+      <label for="taskPriority">Priority  :</label><br>
+      <select id="taskPriority">
+        <option value="urgent">Urgent</option>
+        <option value="important">Important</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select><br>
+      <input type="submit" value="submit">
+  </div>
 </body>
+
 </html>
