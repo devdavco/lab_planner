@@ -1,46 +1,101 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
   <title>Daily Planner</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 
-<body>
+<body class="bg-body-tertiary">
+  <main class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <h1 class="h3 mb-4 text-center">Daily Planner</h1>
+            <!-- id="taskForm": JS localiza el formulario por su id.
+                 novalidate: desactiva la validación nativa del navegador para que
+                 validateTaskForm() (script.js) muestre todos los errores a la vez -->
+            <form id="taskForm" action="#" method="post" novalidate>
+              <fieldset>
+                <legend class="fs-5 mb-3">New task</legend>
+                <div class="mb-3">
+                  <label for="taskName" class="form-label">Task</label>
+                  <input type="text" id="taskName" name="taskName" class="form-control" required>
+                </div>
 
-  <div class="formulario">
-    <form action="#"> <!--Definir el form-handler-->
-      <label for="taskName">Task:</label><br>
-      <input type="text" id="taskName"><br>
-      <label for="taskDescription">Description:</label><br>
-      <input type="text" id="taskDescription"><br>
-      <label for="assignedTo">Assigned to:</label><br>
-      <select id="assignedTo">
-        <option value="user1">User 1</option>
-        <option value="user2">User 2</option>
-        <option value="user3">User 3</option>
-        <option value="user4">User 4</option>
-      </select><br>
-      <label for="targetDate">Target Date:</label><br>
-      <input type="date" id="targetDate"><br>
-      <label for="taskStatus">Status:</label><br>
-      <select id="taskStatus">
-        <option value="notStarted">Not Started</option>
-        <option value="inProgress">In Progress</option>
-        <option value="onHold">On Hold</option>
-        <option value="blocked">Blocked</option>
-      </select><br>
-      <label for="taskPriority">Priority  :</label><br>
-      <select id="taskPriority">
-        <option value="urgent">Urgent</option>
-        <option value="important">Important</option>
-        <option value="medium">Medium</option>
-        <option value="low">Low</option>
-      </select><br>
-      <input type="submit" value="submit">
-  </div>
+                <div class="mb-3">
+                  <label for="taskDescription" class="form-label">Description</label>
+                  <textarea id="taskDescription" name="taskDescription" class="form-control" rows="3" aria-describedby="taskDescriptionHelp" required></textarea>
+                  <div id="taskDescriptionHelp" class="form-text">More than 15 characters.</div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="assignedTo" class="form-label">Assigned to</label>
+                  <input type="text" id="assignedTo" name="assignedTo" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                  <label for="targetDate" class="form-label">Target date</label>
+                  <input type="datetime-local" id="targetDate" name="targetDate" class="form-control" aria-describedby="targetDateHelp" required>
+                  <div id="targetDateHelp" class="form-text">Date and time when the task should be done.</div>
+                </div>
+                <div class="row g-3 mb-4">
+                  <div class="col-12 col-sm-6">
+                    <label for="taskStatus" class="form-label">Status</label>
+                    <select id="taskStatus" name="taskStatus" class="form-select" required>
+                      <option value="" selected disabled>Select a status</option>
+                      <option value="POR HACER">POR HACER</option>
+                      <option value="EN PROCESO">EN PROCESO</option>
+                      <option value="REVISIÓN">REVISIÓN</option>
+                      <option value="HECHO">HECHO</option>
+                    </select>
+                  </div>
+
+                  <div class="col-12 col-sm-6">
+                    <label for="taskPriority" class="form-label">Priority</label>
+                    <select id="taskPriority" name="taskPriority" class="form-select">
+                      <option value="urgent">Urgent</option>
+                      <option value="important">Important</option>
+                      <option value="medium">Medium</option>
+                      <option value="low">Low</option>
+                    </select>
+                  </div>
+                </div>
+              </fieldset>
+
+              <!-- Mensajes de error de validación. alert alert-danger: caja roja de aviso.
+                   d-none: oculto por defecto; JS quita esta clase cuando hay errores.
+                   role="alert": los lectores de pantalla anuncian su contenido al aparecer -->
+              <div id="formErrors" class="alert alert-danger d-none" role="alert"></div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Add task</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- La sección vive en la misma columna que la card, así hereda su mismo ancho.
+             mt-5: margen superior para separarla de la card -->
+        <section class="mt-5" aria-labelledby="tasksHeading">
+          <h2 id="tasksHeading" class="h4 mb-3">Tasks</h2>
+
+          <!-- Contenedor de tareas: script.js agrega aquí una tarjeta por tarea.
+               vstack: apila los hijos en columna (flexbox). gap-3: espacio entre ellos -->
+          <div id="taskList" class="vstack gap-3"></div>
+
+          <!-- Mensaje de estado vacío. text-body-secondary: texto gris secundario -->
+          <p id="emptyTasksMessage" class="text-body-secondary text-center mb-0">No tasks yet. Add your first task above.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <!-- defer: descarga el script en paralelo y lo ejecuta cuando el HTML ya está parseado,
+       así el formulario existe cuando el script lo busca -->
+  <script src="./js/script.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 
 </html>
