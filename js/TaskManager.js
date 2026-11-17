@@ -8,16 +8,6 @@ class TaskManager {
     return this.tasks;
   }
 
-  getTasksWithStatus(status) {
-    let resultado = [];
-    for (let i = 0; i < this.tasks.length; i++) {
-      if (this.tasks[i].estado === status) {
-        resultado.push(this.tasks[i]);
-      }
-    }
-    return resultado;
-  }
-
   addTask(task) {
     this.currentId = this.currentId + 1;
     task.id = this.currentId;
@@ -34,19 +24,28 @@ class TaskManager {
     }
   }
 
-  updateTask(taskId, status) {
+  markTaskAsDone(taskId) {
     for (let i = 0; i < this.tasks.length; i++) {
       if (this.tasks[i].id === taskId) {
-        this.tasks[i].estado = status;
+        if (this.tasks[i].estado !== 'HECHO') {
+          this.tasks[i].estadoAnterior = this.tasks[i].estado;
+          this.tasks[i].estado = 'HECHO';
+        }
+        return this.tasks[i];
       }
     }
+    return null;
   }
 
-  assignTask(taskId, assignee) {
+  unmarkTaskAsDone(taskId) {
     for (let i = 0; i < this.tasks.length; i++) {
       if (this.tasks[i].id === taskId) {
-        this.tasks[i].asignadoA = assignee;
+        if (this.tasks[i].estado === 'HECHO') {
+          this.tasks[i].estado = this.tasks[i].estadoAnterior || 'POR HACER';
+        }
+        return this.tasks[i];
       }
     }
+    return null;
   }
 }

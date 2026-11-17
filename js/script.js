@@ -85,6 +85,26 @@ function createTaskCard(task) {
   prioridad.className = 'mb-3 small';
   prioridad.textContent = 'Prioridad: ' + task.prioridad;
 
+  const botonHecha = document.createElement('button');
+  botonHecha.type = 'button';
+
+  if (task.estado === 'HECHO') {
+    botonHecha.className = 'btn btn-outline-secondary btn-sm me-2';
+    botonHecha.textContent = 'Desmarcar';
+  } else {
+    botonHecha.className = 'btn btn-outline-success btn-sm me-2';
+    botonHecha.textContent = 'Marcar como hecha';
+  }
+
+  botonHecha.addEventListener('click', function () {
+    if (task.estado === 'HECHO') {
+      taskManager.unmarkTaskAsDone(task.id);
+    } else {
+      taskManager.markTaskAsDone(task.id);
+    }
+    renderTaskList();
+  });
+
   const botonEliminar = document.createElement('button');
   botonEliminar.type = 'button';
   botonEliminar.className = 'btn btn-outline-danger btn-sm';
@@ -96,16 +116,36 @@ function createTaskCard(task) {
     updateEmptyMessage();
   });
 
+  if (task.estado === 'HECHO') {
+    titulo.classList.add('text-decoration-line-through');
+  }
+
+  const botones = document.createElement('div');
+  botones.appendChild(botonHecha);
+  botones.appendChild(botonEliminar);
+
   body.appendChild(titulo);
   body.appendChild(descripcion);
   body.appendChild(asignado);
   body.appendChild(fecha);
   body.appendChild(estado);
   body.appendChild(prioridad);
-  body.appendChild(botonEliminar);
+  body.appendChild(botones);
   card.appendChild(body);
 
   return card;
+}
+
+function renderTaskList() {
+  const tasks = taskManager.getAllTasks();
+  const pendientes = tasks.filter(function (task) { return task.estado !== 'HECHO'; });
+  const hechas = tasks.filter(function (task) { return task.estado === 'HECHO'; });
+
+  taskList.innerHTML = '';
+  pendientes.concat(hechas).forEach(function (task) {
+    taskList.appendChild(createTaskCard(task));
+  });
+  updateEmptyMessage();
 }
 
 function updateEmptyMessage() {
