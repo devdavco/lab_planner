@@ -1,62 +1,123 @@
-// Validación del formulario de tareas. Solo lee los campos y muestra errores.
+// Validación del formulario de tareas. Muestra los errores junto a cada campo.
 
-const formErrors = document.getElementById('formErrors');
-
-function showFormErrors(errores) {
-  formErrors.innerHTML = errores.join('<br>');
-  formErrors.classList.remove('d-none');
+// Cada regla recibe el valor ya recortado y devuelve el mensaje de error, o '' si es válido.
+// Así validar todo el formulario o un solo campo usa exactamente las mismas reglas.
+function checkName(value) {
+  if (value === '') {
+    return 'El nombre es obligatorio.';
+  }
+  if (!isNaN(value)) {
+    return 'El nombre no puede ser numérico.';
+  }
+  if (value.length <= 8) {
+    return 'El nombre debe tener más de 8 caracteres.';
+  }
+  return '';
 }
 
-function hideFormErrors() {
-  formErrors.innerHTML = '';
-  formErrors.classList.add('d-none');
+function checkDescription(value) {
+  if (value === '') {
+    return 'La descripción es obligatoria.';
+  }
+  if (value.length <= 15) {
+    return 'La descripción debe tener más de 15 caracteres.';
+  }
+  return '';
+}
+
+function checkAssignedTo(value) {
+  if (value === '') {
+    return 'El campo «Asignado a» es obligatorio.';
+  }
+  if (!isNaN(value)) {
+    return 'El campo «Asignado a» no puede ser numérico.';
+  }
+  if (value.length <= 4) {
+    return 'El campo «Asignado a» debe tener más de 4 caracteres.';
+  }
+  return '';
+}
+
+function checkTargetDate(value) {
+  if (value === '') {
+    return 'Elige una fecha de entrega.';
+  }
+  return '';
+}
+
+function checkStatus(value) {
+  if (value === '') {
+    return 'Selecciona un estado.';
+  }
+  return '';
+}
+
+// Las claves son los id de los campos. El orden define cuál recibe el foco primero.
+const FIELD_RULES = {
+  taskName: checkName,
+  taskDescription: checkDescription,
+  assignedTo: checkAssignedTo,
+  targetDate: checkTargetDate,
+  taskStatus: checkStatus,
+};
+
+function getFieldError(input) {
+  const rule = FIELD_RULES[input.id];
+  return rule(input.value.trim());
+}
+
+// Cada campo tiene su contenedor de error con el id del campo + "Error".
+function getErrorElement(input) {
+  return document.getElementById(input.id + 'Error');
+}
+
+// aria-invalid avisa a los lectores de pantalla; is-invalid es solo visual.
+function showFieldError(input, message) {
+  input.classList.add('is-invalid');
+  input.setAttribute('aria-invalid', 'true');
+  getErrorElement(input).textContent = message;
+}
+
+function clearFieldError(input) {
+  input.classList.remove('is-invalid');
+  input.removeAttribute('aria-invalid');
+  getErrorElement(input).textContent = '';
+}
+
+// Solo quita el error cuando el campo ya es válido, para no mostrar errores mientras se escribe.
+export function clearFieldErrorIfValid(input) {
+  if (FIELD_RULES[input.id] === undefined) {
+    return;
+  }
+  if (!input.classList.contains('is-invalid')) {
+    return;
+  }
+  if (getFieldError(input) === '') {
+    clearFieldError(input);
+  }
 }
 
 // Devuelve true si el formulario es válido y false si hay errores.
 export function validateTaskForm() {
-  const nombre = document.getElementById('taskName').value.trim();
-  const descripcion = document.getElementById('taskDescription').value.trim();
-  const asignadoA = document.getElementById('assignedTo').value.trim();
-  const fechaDeEntrega = document.getElementById('targetDate').value;
-  const estado = document.getElementById('taskStatus').value;
+  let firstInvalidInput = null;
 
-  const errores = [];
-
-  if (nombre === '') {
-    errores.push('Nombre: campo es obligatorio.');
-  } else if (!isNaN(nombre)) {
-    errores.push('Nombre: no puede ser numérico.');
-  } else if (nombre.length <= 8) {
-    errores.push('Nombre: debe tener más de 8 caracteres.');
+  for (const fieldId of Object.keys(FIELD_RULES)) {
+    const input = document.getElementById(fieldId);
+    const message = getFieldError(input);
+    if (message === '') {
+      clearFieldError(input);
+    } else {
+      showFieldError(input, message);
+      if (firstInvalidInput === null) {
+        firstInvalidInput = input;
+      }
+    }
   }
 
-  if (descripcion === '') {
-    errores.push('Descripción: este campo es obligatorio.');
-  } else if (descripcion.length <= 15) {
-    errores.push('Descripción: debe tener más de 15 caracteres.');
-  }
-
-  if (asignadoA === '') {
-    errores.push('Asignado a: este campo es obligatorio.');
-  } else if (!isNaN(asignadoA)) {
-    errores.push('Asignado a: no puede ser numérico.');
-  } else if (asignadoA.length <= 4) {
-    errores.push('Asignado a: debe tener más de 4 caracteres.');
-  }
-
-  if (fechaDeEntrega === '') {
-    errores.push('Fecha de entrega: elige una fecha y hora.');
-  }
-
-  if (estado === '') {
-    errores.push('Estado: selecciona un estado.');
-  }
-
-  if (errores.length > 0) {
-    showFormErrors(errores);
+  // El foco lleva al usuario directo al primer campo que tiene que corregir.
+  if (firstInvalidInput !== null) {
+    firstInvalidInput.focus();
     return false;
   }
-
-  hideFormErrors();
   return true;
 }

@@ -1,11 +1,14 @@
 // Punto de entrada: conecta los datos, la validación y la interfaz.
 import { TaskManager } from './TaskManager.js';
-import { validateTaskForm } from './validation.js';
+import { validateTaskForm, clearFieldErrorIfValid } from './validation.js';
 import { renderTaskList } from './ui.js';
+import { addDays, toInputDateValue } from './dateUtils.js';
 
 const taskManager = new TaskManager();
 const form = document.getElementById('taskForm');
 const taskList = document.getElementById('taskList');
+const dateInput = document.getElementById('targetDate');
+const quickDateButtons = document.getElementById('quickDateButtons');
 
 function readTaskFromForm() {
   return {
@@ -69,7 +72,25 @@ function handleTaskListClick(event) {
   taskManager.save();
 }
 
+// Escuchar en el formulario cubre todos los campos con un solo listener por evento.
+// 'change' hace falta para los select y la fecha, que no siempre disparan 'input'.
+function handleFieldEdit(event) {
+  clearFieldErrorIfValid(event.target);
+}
+function handleQuickDateClick(event) {
+  const button = event.target.closest('[data-days]');
+  if (button === null) {
+    return;
+  }
+  const days = Number(button.dataset.days);
+  dateInput.value = toInputDateValue(addDays(new Date(), days));
+  // Cambiar value desde código no dispara 'input' ni 'change', así que el error se limpia aquí.
+  clearFieldErrorIfValid(dateInput);
+}
 form.addEventListener('submit', handleFormSubmit);
+form.addEventListener('input', handleFieldEdit);
+form.addEventListener('change', handleFieldEdit);
+quickDateButtons.addEventListener('click', handleQuickDateClick);
 taskList.addEventListener('click', handleTaskListClick);
 // Primero se cargan los datos guardados y después se pinta, para no mostrar la lista vacía.
 taskManager.load();

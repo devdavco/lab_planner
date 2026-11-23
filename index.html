@@ -1,22 +1,30 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Planificador de Tareas</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <!-- Va después de Bootstrap para poder ajustar sus estilos -->
+  <link href="./css/styles.css" rel="stylesheet">
 </head>
-
 <body class="bg-body-tertiary">
-  <main class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-8 col-lg-6">
-        <div class="card shadow-sm">
+  <main class="container py-4 py-lg-5">
+    <!--Encabezado con resumen de contadores-->
+    <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
+      <h1 class="h3 mb-0">Planificador de Tareas</h1>
+      <p id="taskSummary" class="d-flex flex-wrap gap-2 mb-0" aria-live="polite" aria-atomic="true">
+        <span class="badge rounded-pill text-bg-light border">Total: <span id="countTotal">0</span></span>
+        <span class="badge rounded-pill text-bg-light border">Pendientes: <span id="countPending">0</span></span>
+        <span class="badge rounded-pill text-bg-light border">Hechas: <span id="countDone">0</span></span>
+      </p>
+    </header>
+    <div class="row g-4">
+      <!--Columna del formulario-->
+      <div class="col-12 col-lg-4">
+        <div class="card shadow-sm sticky-lg-top form-sticky">
           <div class="card-body p-4">
-            <h1 class="h3 mb-4 text-center">Planificador de Tareas</h1>
-
             <!--Formulario Agregar tarea-->
             <form id="taskForm" action="#" method="post" novalidate>
               <fieldset>
@@ -24,43 +32,52 @@
                 <div class="mb-3">
                   <label for="taskName" class="form-label">Nombre</label>
                   <input type="text" id="taskName" name="taskName" class="form-control"
-                    placeholder="Preparar informe" aria-describedby="taskNameHelp" required>
+                    placeholder="Preparar informe" aria-describedby="taskNameHelp taskNameError" required>
+                  <div id="taskNameError" class="invalid-feedback"></div>
                   <div id="taskNameHelp" class="form-text">Más de 8 caracteres.</div>
                 </div>
-
                 <div class="mb-3">
                   <label for="taskDescription" class="form-label">Descripción</label>
                   <textarea id="taskDescription" name="taskDescription" class="form-control" rows="3"
-                    placeholder="Resumir los resultados del sprint" aria-describedby="taskDescriptionHelp"
-                    required></textarea>
+                    placeholder="Resumir los resultados del sprint"
+                    aria-describedby="taskDescriptionHelp taskDescriptionError" required></textarea>
+                  <div id="taskDescriptionError" class="invalid-feedback"></div>
                   <div id="taskDescriptionHelp" class="form-text">Más de 15 caracteres.</div>
                 </div>
-
                 <div class="mb-3">
                   <label for="assignedTo" class="form-label">Asignado a</label>
                   <input type="text" id="assignedTo" name="assignedTo" class="form-control"
-                    placeholder="María" aria-describedby="assignedToHelp" required>
+                    placeholder="María" aria-describedby="assignedToHelp assignedToError" required>
+                  <div id="assignedToError" class="invalid-feedback"></div>
                   <div id="assignedToHelp" class="form-text">Más de 4 caracteres.</div>
                 </div>
                 <div class="mb-3">
                   <label for="targetDate" class="form-label">Fecha de entrega</label>
-                  <input type="datetime-local" id="targetDate" name="targetDate" class="form-control"
-                    aria-describedby="targetDateHelp" required>
-                  <div id="targetDateHelp" class="form-text">Fecha y hora en que se debe completar la tarea.</div>
+                  <input type="date" id="targetDate" name="targetDate" class="form-control"
+                    aria-describedby="targetDateHelp targetDateError" required>
+                  <div id="targetDateError" class="invalid-feedback"></div>
+                  <div id="quickDateButtons" class="d-flex flex-wrap gap-2 mt-2" role="group"
+                    aria-label="Atajos de fecha de entrega">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-days="0">Hoy</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-days="1">Mañana</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-days="7">En una semana</button>
+                  </div>
+                  <div id="targetDateHelp" class="form-text">Día en que se debe completar la tarea.</div>
                 </div>
                 <div class="row g-3 mb-4">
-                  <div class="col-12 col-sm-6">
+                  <div class="col-12 col-sm-6 col-lg-12">
                     <label for="taskStatus" class="form-label">Estado</label>
-                    <select id="taskStatus" name="taskStatus" class="form-select" required>
+                    <select id="taskStatus" name="taskStatus" class="form-select"
+                      aria-describedby="taskStatusError" required>
                       <option value="" selected disabled>Selecciona un estado</option>
                       <option value="POR HACER">POR HACER</option>
                       <option value="EN PROCESO">EN PROCESO</option>
                       <option value="REVISIÓN">REVISIÓN</option>
                       <option value="HECHO">HECHO</option>
                     </select>
+                    <div id="taskStatusError" class="invalid-feedback"></div>
                   </div>
-
-                  <div class="col-12 col-sm-6">
+                  <div class="col-12 col-sm-6 col-lg-12">
                     <label for="taskPriority" class="form-label">Prioridad</label>
                     <select id="taskPriority" name="taskPriority" class="form-select">
                       <option value="Urgente">Urgente</option>
@@ -71,25 +88,22 @@
                   </div>
                 </div>
               </fieldset>
-
-              <div id="formErrors" class="alert alert-danger d-none" role="alert"></div>
-
               <div class="d-grid">
                 <button type="submit" class="btn btn-primary">Agregar tarea</button>
               </div>
             </form>
           </div>
         </div>
-
-        <section class="mt-5" aria-labelledby="tasksHeading">
-          <h2 id="tasksHeading" class="h4 mb-3">Tareas</h2>
-
-          <div id="taskList" class="vstack gap-3"></div>
-
-          <p id="emptyTasksMessage" class="text-body-secondary text-center mb-0">Aún no hay tareas. Agrega la primera
-            con el formulario.</p>
-        </section>
       </div>
+      <!--Columna de la lista de tareas-->
+      <section class="col-12 col-lg-8" aria-labelledby="tasksHeading">
+        <h2 id="tasksHeading" class="h4 mb-3">Tareas</h2>
+        <div id="taskList" class="vstack gap-3"></div>
+        <div id="emptyTasksMessage" class="task-empty rounded-3 p-4 text-center text-body-secondary">
+          <p class="fw-semibold mb-1">Aún no hay tareas.</p>
+          <p class="mb-0">Completa el formulario «Nueva tarea» para agregar la primera.</p>
+        </div>
+      </section>
     </div>
   </main>
   <script type="module" src="./js/index.js"></script>
@@ -97,5 +111,4 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
 </body>
-
 </html>

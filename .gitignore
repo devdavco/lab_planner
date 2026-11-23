@@ -1,0 +1,4 @@
+# Skill de diseño instalada localmente; no forma parte del proyecto
+.agents/
+.claude/
+skills-lock.json
