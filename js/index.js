@@ -37,6 +37,7 @@ function handleFormSubmit(event) {
   }
   taskManager.addTask(readTaskFromForm());
   renderTaskList(taskManager.getAllTasks());
+  taskManager.save();
   form.reset();
 }
 
@@ -65,8 +66,11 @@ function handleTaskListClick(event) {
   }
 
   renderTaskList(taskManager.getAllTasks());
+  taskManager.save();
 }
 
 form.addEventListener('submit', handleFormSubmit);
 taskList.addEventListener('click', handleTaskListClick);
+// Primero se cargan los datos guardados y después se pinta, para no mostrar la lista vacía.
+taskManager.load();
 renderTaskList(taskManager.getAllTasks());
