@@ -104,6 +104,7 @@ function createDoneButton(task) {
 function createCardActions(task) {
   const actions = createElement('div', 'd-flex flex-wrap justify-content-end gap-2');
   actions.appendChild(createDoneButton(task));
+  actions.appendChild(createActionButton('Editar', 'Editar tarea', 'btn btn-outline-primary btn-sm', 'edit', task));
   actions.appendChild(createActionButton('Eliminar', 'Eliminar tarea', 'btn btn-outline-danger btn-sm', 'delete', task));
   return actions;
 }

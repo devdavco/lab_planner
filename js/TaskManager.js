@@ -2,6 +2,9 @@
 const TASKS_KEY = 'tasks';
 const CURRENT_ID_KEY = 'currentId';
 
+// Lista blanca de campos que se pueden editar: así nunca se cambia el id ni estadoAnterior por error.
+const EDITABLE_FIELDS = ['nombre', 'descripcion', 'asignadoA', 'fechaDeEntrega', 'estado', 'prioridad'];
+
 export class TaskManager {
   constructor() {
     this.tasks = [];
@@ -51,6 +54,24 @@ export class TaskManager {
     }
   }
 
+  editTask(taskId, changes) {
+    for (let i = 0; i < this.tasks.length; i++) {
+      if (this.tasks[i].id === taskId) {
+        const task = this.tasks[i];
+        // Se compara antes de asignar. Si el estado cambia, el estado anterior ya no tiene sentido.
+        if (changes.estado !== undefined && changes.estado !== task.estado) {
+          delete task.estadoAnterior;
+        }
+        EDITABLE_FIELDS.forEach(function (field) {
+          if (changes[field] !== undefined) {
+            task[field] = changes[field];
+          }
+        });
+        return task;
+      }
+    }
+    return null;
+  }
   markTaskAsDone(taskId) {
     for (let i = 0; i < this.tasks.length; i++) {
       if (this.tasks[i].id === taskId) {
