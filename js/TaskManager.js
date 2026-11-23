@@ -1,4 +1,4 @@
-class TaskManager {
+export class TaskManager {
   constructor() {
     this.tasks = [];
     this.currentId = 0;
