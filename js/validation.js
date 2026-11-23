@@ -84,6 +84,13 @@ function clearFieldError(input) {
   getErrorElement(input).textContent = '';
 }
 
+// Al cerrar el modal se quitan los errores, pero lo escrito se conserva para no hacer perder el trabajo.
+export function clearAllFieldErrors() {
+  for (const fieldId of Object.keys(FIELD_RULES)) {
+    clearFieldError(document.getElementById(fieldId));
+  }
+}
+
 // Solo quita el error cuando el campo ya es válido, para no mostrar errores mientras se escribe.
 export function clearFieldErrorIfValid(input) {
   if (FIELD_RULES[input.id] === undefined) {

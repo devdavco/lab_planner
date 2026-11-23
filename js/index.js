@@ -1,6 +1,6 @@
 // Punto de entrada: conecta los datos, la validación y la interfaz.
 import { TaskManager } from './TaskManager.js';
-import { validateTaskForm, clearFieldErrorIfValid } from './validation.js';
+import { validateTaskForm, clearFieldErrorIfValid, clearAllFieldErrors } from './validation.js';
 import { renderTaskList } from './ui.js';
 import { addDays, toInputDateValue } from './dateUtils.js';
 
@@ -9,6 +9,9 @@ const form = document.getElementById('taskForm');
 const taskList = document.getElementById('taskList');
 const dateInput = document.getElementById('targetDate');
 const quickDateButtons = document.getElementById('quickDateButtons');
+const modalElement = document.getElementById('taskModal');
+const nameInput = document.getElementById('taskName');
+const newTaskButton = document.getElementById('newTaskButton');
 
 function readTaskFromForm() {
   return {
@@ -33,6 +36,11 @@ function toggleDone(task) {
   }
 }
 
+// bootstrap es global: su script se carga antes que los módulos, que esperan a que termine el HTML.
+function closeTaskModal() {
+  bootstrap.Modal.getOrCreateInstance(modalElement).hide();
+}
+
 function handleFormSubmit(event) {
   event.preventDefault();
   if (validateTaskForm() === false) {
@@ -42,6 +50,7 @@ function handleFormSubmit(event) {
   renderTaskList(taskManager.getAllTasks());
   taskManager.save();
   form.reset();
+  closeTaskModal();
 }
 
 function handleTaskListClick(event) {
@@ -89,7 +98,26 @@ function handleQuickDateClick(event) {
   clearFieldErrorIfValid(dateInput);
 }
 
+// Bootstrap enfoca el modal, no su primer campo; se enfoca Nombre para poder escribir de inmediato.
+function handleModalShown() {
+  nameInput.focus();
+}
+
+// Se quitan los errores pero no lo escrito. Bootstrap devuelve el foco al botón que abrió el modal,
+// pero esa devolución ocurre después de este evento. Con setTimeout 0 se espera a que termine,
+// y solo si el foco quedó en body (el botón del estado vacío ya está oculto) va al botón del encabezado.
+function handleModalHidden() {
+  clearAllFieldErrors();
+  setTimeout(function () {
+    if (document.activeElement === document.body) {
+      newTaskButton.focus();
+    }
+  }, 0);
+}
+
 form.addEventListener('submit', handleFormSubmit);
+modalElement.addEventListener('shown.bs.modal', handleModalShown);
+modalElement.addEventListener('hidden.bs.modal', handleModalHidden);
 form.addEventListener('input', handleFieldEdit);
 form.addEventListener('change', handleFieldEdit);
 quickDateButtons.addEventListener('click', handleQuickDateClick);

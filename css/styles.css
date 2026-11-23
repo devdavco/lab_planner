@@ -1,7 +1,6 @@
 /* Solo lo que Bootstrap no resuelve con utilidades. */
 
 :root {
-  --app-sticky-top: 1.5rem;
   --task-priority-border-width: 0.375rem;
   /* Color por defecto; ui.js lo reemplaza en cada tarjeta según la prioridad. */
   --task-priority-color: var(--bs-secondary);
@@ -30,17 +29,6 @@ h1,
   letter-spacing: -0.01em;
 }
 
-/* Solo en escritorio el formulario se queda fijo al hacer scroll.
-   Si es más alto que la ventana, se desplaza por dentro para que el botón siempre se pueda alcanzar. */
-@media (min-width: 992px) {
-  .form-sticky {
-    position: sticky;
-    top: var(--app-sticky-top);
-    max-height: calc(100vh - 2 * var(--app-sticky-top));
-    overflow-y: auto;
-  }
-}
-
 /* Borde punteado para que el estado vacío se lea como un espacio por llenar. */
 .task-empty {
   border: 2px dashed var(--bs-border-color);
@@ -59,7 +47,7 @@ h1,
 @media (pointer: coarse) {
   .task-card .btn,
   #quickDateButtons .btn,
-  #taskForm button[type="submit"] {
+  .modal-footer .btn {
     min-height: var(--app-tap-size);
     /* inline-flex centra el texto en vertical cuando el botón crece por min-height. */
     display: inline-flex;
