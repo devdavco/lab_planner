@@ -15,7 +15,7 @@ export function parseLocalDate(value) {
   return new Date(year, monthIndex, day);
 }
 
-// Texto corto para la tarjeta, por ejemplo "mar, 14 oct".
+// Texto corto para la tarjeta, por ejemplo "mar, 14 de oct".
 export function formatDueDate(value) {
   if (!value) {
     return '';

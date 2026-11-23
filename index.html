@@ -14,17 +14,27 @@
     <!--Encabezado con resumen de contadores-->
     <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
       <h1 class="h3 mb-0">Planificador de Tareas</h1>
-      <p id="taskSummary" class="d-flex flex-wrap gap-2 mb-0" aria-live="polite" aria-atomic="true">
-        <span class="badge rounded-pill text-bg-light border">Total: <span id="countTotal">0</span></span>
-        <span class="badge rounded-pill text-bg-light border">Pendientes: <span id="countPending">0</span></span>
-        <span class="badge rounded-pill text-bg-light border">Hechas: <span id="countDone">0</span></span>
-      </p>
+      <!--Cada contador: etiqueta pequeña arriba y número grande debajo-->
+      <div id="taskSummary" class="d-flex gap-4" aria-live="polite" aria-atomic="true">
+        <div class="lh-sm">
+          <span class="d-block small text-body-secondary">Total:</span>
+          <span id="countTotal" class="fs-4 fw-semibold">0</span>
+        </div>
+        <div class="lh-sm">
+          <span class="d-block small text-body-secondary">Pendientes:</span>
+          <span id="countPending" class="fs-4 fw-semibold">0</span>
+        </div>
+        <div class="lh-sm">
+          <span class="d-block small text-body-secondary">Hechas:</span>
+          <span id="countDone" class="fs-4 fw-semibold">0</span>
+        </div>
+      </div>
     </header>
     <div class="row g-4">
       <!--Columna del formulario-->
       <div class="col-12 col-lg-4">
-        <div class="card shadow-sm sticky-lg-top form-sticky">
-          <div class="card-body p-4">
+        <div class="card form-sticky">
+          <div class="card-body p-3 p-sm-4">
             <!--Formulario Agregar tarea-->
             <form id="taskForm" action="#" method="post" novalidate>
               <fieldset>

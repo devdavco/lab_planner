@@ -109,14 +109,11 @@ function createCardActions(task) {
 }
 
 export function createTaskCard(task) {
-  const card = createElement('article', 'card shadow-sm task-card');
+  const card = createElement('article', 'card task-card');
   // El id en la tarjeta permite saber a qué tarea pertenece un clic.
   card.dataset.id = task.id;
   // La variable CSS la usa styles.css para pintar el borde izquierdo.
   card.style.setProperty('--task-priority-color', getPriorityStyle(task).borderColor);
-  if (isDone(task)) {
-    card.classList.add('bg-body-tertiary');
-  }
 
   const body = createElement('div', 'card-body');
   body.appendChild(createCardHeader(task));

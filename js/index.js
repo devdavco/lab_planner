@@ -77,6 +77,7 @@ function handleTaskListClick(event) {
 function handleFieldEdit(event) {
   clearFieldErrorIfValid(event.target);
 }
+
 function handleQuickDateClick(event) {
   const button = event.target.closest('[data-days]');
   if (button === null) {
@@ -87,6 +88,7 @@ function handleQuickDateClick(event) {
   // Cambiar value desde código no dispara 'input' ni 'change', así que el error se limpia aquí.
   clearFieldErrorIfValid(dateInput);
 }
+
 form.addEventListener('submit', handleFormSubmit);
 form.addEventListener('input', handleFieldEdit);
 form.addEventListener('change', handleFieldEdit);

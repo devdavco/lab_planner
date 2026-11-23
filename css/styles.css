@@ -5,6 +5,13 @@
   --task-priority-border-width: 0.375rem;
   /* Color por defecto; ui.js lo reemplaza en cada tarjeta según la prioridad. */
   --task-priority-color: var(--bs-secondary);
+  /* El anillo de foco de Bootstrap es azul al 25 %: no llega al contraste 3:1 que pide WCAG. */
+  --app-focus-color: var(--bs-primary);
+  --app-focus-width: 2px;
+  /* 44 px es el alto mínimo cómodo para tocar con el dedo. */
+  --app-tap-size: 44px;
+  --app-motion-hover: 150ms;
+  --app-motion-press: 90ms;
 }
 
 /* Bootstrap no tiene utilidad para colorear un solo borde: border-danger pinta los cuatro. */
@@ -12,14 +19,81 @@
   border-left: var(--task-priority-border-width) solid var(--task-priority-color);
 }
 
-/* sticky-lg-top pega el formulario en top: 0; se separa un poco del borde de la ventana. */
+/* Los badges de Bootstrap miden .75em (12 px); bajo 13 px cuesta leer. */
+.task-card .badge {
+  font-size: 0.8125rem;
+}
+
+/* Un tracking un poco más cerrado hace que los títulos se lean como un bloque. */
+h1,
+.task-card .card-title {
+  letter-spacing: -0.01em;
+}
+
+/* Solo en escritorio el formulario se queda fijo al hacer scroll.
+   Si es más alto que la ventana, se desplaza por dentro para que el botón siempre se pueda alcanzar. */
 @media (min-width: 992px) {
   .form-sticky {
+    position: sticky;
     top: var(--app-sticky-top);
+    max-height: calc(100vh - 2 * var(--app-sticky-top));
+    overflow-y: auto;
   }
 }
 
 /* Borde punteado para que el estado vacío se lea como un espacio por llenar. */
 .task-empty {
   border: 2px dashed var(--bs-border-color);
+}
+
+/* Un solo estilo de foco en toda la app; sin transición para que aparezca al instante. */
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible {
+  outline: var(--app-focus-width) solid var(--app-focus-color);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* Con dedo (pantallas táctiles) los controles necesitan más alto; con mouse se deja el de Bootstrap. */
+@media (pointer: coarse) {
+  .task-card .btn,
+  #quickDateButtons .btn,
+  #taskForm button[type="submit"] {
+    min-height: var(--app-tap-size);
+    /* inline-flex centra el texto en vertical cuando el botón crece por min-height. */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* El textarea ya es alto; solo los campos de una línea. */
+  #taskForm input.form-control,
+  #taskForm .form-select {
+    min-height: var(--app-tap-size);
+  }
+}
+
+/* Movimiento solo si la persona no pidió reducirlo en su sistema. */
+@media (prefers-reduced-motion: no-preference) {
+  .btn {
+    transition:
+      color var(--app-motion-hover) ease-out,
+      background-color var(--app-motion-hover) ease-out,
+      border-color var(--app-motion-hover) ease-out,
+      transform var(--app-motion-hover) ease-out;
+  }
+
+  /* Subir al pasar el puntero solo tiene sentido con mouse; en táctil no hay hover. */
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Al presionar se hunde un poco, para que el clic se sienta. */
+  .btn:active {
+    transform: translateY(1px) scale(0.985);
+    transition-duration: var(--app-motion-press);
+  }
 }
